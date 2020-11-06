@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 from Menu import Menu
+import json
 
+orderNumber = 0
 app = Flask("Assignment 2")
+
 
 
 @app.route('/pizza')
@@ -14,7 +17,15 @@ def welcome_pizza():
 
 @app.route('/order', methods=['POST'])
 def place_order():
+  with open('./order.json', 'r+') as items:
+    order = json.load(items)  
   data = request.get_json()
+  global orderNumber
+  order[orderNumber] = data
+  orderNumber += 1
+  with open('./order.json', 'w') as items:
+    json.dump(order, items)
+  
   return "Order Successfully Placed"
 
 def sum():

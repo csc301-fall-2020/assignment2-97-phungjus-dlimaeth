@@ -8,16 +8,15 @@ class Order:
     with open('./menu.json') as f:
             drinkPrices = json.load(f)['drinks']
 
-    def __init__(self, orderNumber):
+    def __init__(self, orderNumber, userOrder):
+        self.orderNumber = str(orderNumber)
+        self.userOrder = userOrder
 
-        self.items = []
-        self.orderNumber = orderNumber
-
-    def addItem(self, item):
+    def addPizza(self, pizza):
         """
         Add this item to the order
         """
-        self.items.append(item)
+        self.userOrder[self.orderNumber]['pizzas'].append(pizza)
 
     def removeItem(self, itemIndex):
         """
