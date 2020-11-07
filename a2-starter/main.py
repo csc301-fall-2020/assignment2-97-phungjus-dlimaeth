@@ -116,17 +116,18 @@ def cli():
 
       # TODO use order.json instead
 
-      print("Options for Updating Order:")
-      print("1. Add Pizza")
-      print("2. Delete Pizza")
-      print("3. Update Pizza")
-      print("4. Add Drink")
-      print("5. Update Drink")
-      print("6. Exit")
+     
 
       while True:
 
         try:
+          print("Options for Updating Order:")
+          print("1. Add Pizza")
+          print("2. Delete Pizza")
+          print("3. Update Pizza")
+          print("4. Add Drink")
+          print("5. Update Drink")
+          print("6. Exit")
           selection = input("Select an Option\n")
           if (selection == '1'):
 
@@ -172,21 +173,23 @@ def cli():
           elif (selection == '3'):
             print(orders[order_num]['pizza'])
 
-            while True:
+            done = False
+            while not done:
               try:
                 pizzaPosition = input(
                   "Please enter the number that corresponds to the pizza you wish to modify starting from 1, and from left to right\n")
                 if (int(pizzaPosition) > len(orders[order_num]['pizza'] or int(pizzaPosition) <= 0)):
                   raise ValueError
                 else:
-                  print("Options for modifying pizza:")
-                  print("1. Change Type")
-                  print("2. Change Size")
-                  print("3. Enter List of all Toppings")
-                  print("4. Exit")
+
                   while True:
                     try:
-                      options = input("Please enter a valid option number\n")
+                      print("Options for modifying pizza:")
+                      print("1. Change Type")
+                      print("2. Change Size")
+                      print("3. Enter List of all Toppings")
+                      print("4. Exit")
+                      options = input("Please enter an option number\n")
                       if (options == '1'):
                         while True:
                           try:
@@ -226,6 +229,7 @@ def cli():
                             print("Enter valid list of Toppings")
                             continue
                       elif (options == '4'):
+                        done = True
                         break
                       else:
                         raise ValueError
@@ -242,7 +246,7 @@ def cli():
             while True:
               try:
                 new_Drink = input("Please enter the new drink you wish to add\n")
-                new_Drink_Quantity = input("Please enter the quantity you wish to add of the new Drink")
+                new_Drink_Quantity = input("Please enter the quantity you wish to add of the new Drink\n")
 
                 if (int(new_Drink_Quantity) <= 0 or (not (new_Drink.lower() in menu['drinks']))):
                   raise ValueError
@@ -251,7 +255,7 @@ def cli():
                     orders[order_num]['drinks'][new_Drink.lower()] += int(new_Drink_Quantity)
                     break
                   else:
-                    orders[order_num]['drins'][new_Drink.lower()] = int(new_Drink_Quantity)
+                    orders[order_num]['drinks'][new_Drink.lower()] = int(new_Drink_Quantity)
                     break
 
               except ValueError:
@@ -262,7 +266,7 @@ def cli():
             while True:
               try:
                 new_Drink = input("Please enter the name of the drink you wish to modify\n")
-                new_Drink_Quantity = input("Please enter the updated quantity of the drink")
+                new_Drink_Quantity = input("Please enter the updated quantity of the drink\n")
                 if (int(new_Drink_Quantity) < 0 or (not (new_Drink.lower() in menu['drinks'])) or not (
                     new_Drink.lower() in orders[order_num]['drinks'])):
                   raise ValueError
