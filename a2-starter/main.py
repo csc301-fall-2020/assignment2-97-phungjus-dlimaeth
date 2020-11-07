@@ -106,6 +106,189 @@ def cli():
       os.system(str_output)
 
 
+    elif (choice == '2'):
+
+      while True:
+
+        try:
+          order_num = input("Please enter your order number: \n")
+          if not (order_num in orders):
+            raise IndexError
+          else:
+            break
+        except IndexError:
+          print("Enter a valid order number")
+          continue
+
+      # TODO use order.json instead
+      cur_order = orders[order_num]
+
+      print("Options for Updating Order:")
+      print("1. Add Pizza")
+      print("2. Delete Pizza")
+      print("3. Update Pizza")
+      print("4. Add Drink")
+      print("5. Update Drink")
+      print("6. Exit")
+
+      while True:
+
+        try:
+          selection = input("Select an Option\n")
+          if (selection == '1'):
+
+            while True:
+              try:
+                pizzaOrder = input("Enter your pizza order in the format: PizzaType Size [ToppingA,ToppingB,..]\n")
+                pizzaType = pizzaOrder.split(' ')[0].lower()
+                pizzaSize = pizzaOrder.split(' ')[1].lower()
+                pizzaToppings = pizzaOrder.split(' ')[2].strip('[').strip(']').split(',')
+
+                if (pizzaType in menu['pizzaTypes'] and pizzaSize in menu['size']):
+                  for topping in pizzaToppings:
+                    if topping == '':
+                      break
+                    elif (not (topping in menu['toppings'])):
+                      raise IndexError
+                  orders[order_num]['pizza'].append({"pizzaType": pizzaType, "pizzaSize": pizzaSize,
+                                                     "toppings": ([] if pizzaToppings[0] == '' else pizzaToppings)})
+                  break
+                else:
+                  raise IndexError
+              except IndexError:
+                print('Invalid input please try to match the exact format')
+                continue
+
+          elif (selection == '2'):
+            print(orders[order_num]['pizza'])
+
+            while True:
+              try:
+                pizzaPosition = input(
+                  "Please enter the number that corresponds to the pizza you wish to delete starting from 1, and from left to right\n")
+                if (int(pizzaPosition) > len(orders[order_num]['pizza'] or int(pizzaPosition) <= 0)):
+                  raise ValueError
+                else:
+                  orders[order_num]['pizza'].pop(int(pizzaPosition) - 1)
+                  print("Pizza successfully deleted")
+                  break
+              except ValueError:
+                print("Please enter the correct number")
+                continue
+
+          elif (selection == '3'):
+            print(orders[order_num]['pizza'])
+
+            while True:
+              try:
+                pizzaPosition = input(
+                  "Please enter the number that corresponds to the pizza you wish to modify starting from 1, and from left to right\n")
+                if (int(pizzaPosition) > len(orders[order_num]['pizza'] or int(pizzaPosition) <= 0)):
+                  raise ValueError
+                else:
+                  print("Options for modifying pizza:")
+                  print("1. Change Type")
+                  print("2. Change Size")
+                  print("3. Enter List of all Toppings")
+                  print("4. Exit")
+                  while True:
+                    try:
+                      options = input("Please enter a valid option number\n")
+                      if (options == '1'):
+                        while True:
+                          try:
+                            new_Pizza_Type = input("Please enter the new Pizza Type\n")
+                            if (new_Pizza_Type.lower() in menu['pizzaTypes']):
+                              orders[order_num]['pizza'][int(pizzaPosition) - 1]['pizzaType'] = new_Pizza_Type.lower()
+                              break
+                            else:
+                              raise ValueError
+                          except ValueError:
+                            print("Enter valid pizza type")
+                            continue
+                      elif (options == '2'):
+                        while True:
+                          try:
+                            new_Pizza_Size = input("Please enter the new Pizza Size\n")
+                            if (new_Pizza_Size.lower() in menu['size']):
+                              orders[order_num]['pizza'][int(pizzaPosition) - 1]['pizzaSize'] = new_Pizza_Size.lower()
+                              break
+                            else:
+                              raise ValueError
+                          except ValueError:
+                            print("Enter valid pizza type")
+                            continue
+                      elif (options == '3'):
+                        while True:
+                          try:
+                            new_Pizza_Toppings = input(
+                              "Please enter the new list of toppings in format: [toppingA,toppingB,...]\n")
+                            pizza_Topping_List = new_Pizza_Toppings.strip('[').strip(']').split(',')
+                            for topping in pizza_Topping_List:
+                              if not (topping in menu['toppings']):
+                                raise IndexError
+                            orders[order_num]['pizza'][int(pizzaPosition) - 1]['toppings'] = pizza_Topping_List
+                            break
+                          except IndexError:
+                            print("Enter valid list of Toppings")
+                            continue
+                      elif (options == '4'):
+                        break
+                      else:
+                        raise ValueError
+                    except ValueError:
+                      print("Enter valid option number")
+                      continue
+
+
+              except ValueError:
+                print("Please enter the correct number")
+                continue
+          elif (selection == '4'):
+
+            while True:
+              try:
+                new_Drink = input("Please enter the new drink you wish to add\n")
+                new_Drink_Quantity = input("Please enter the quantity you wish to add of the new Drink")
+
+                if (int(new_Drink_Quantity) <= 0 or (not (new_Drink.lower() in menu['drinks']))):
+                  raise ValueError
+                else:
+                  if (new_Drink.lower() in orders[order_num]['drinks']):
+                    orders[order_num]['drinks'][new_Drink.lower()] += int(new_Drink_Quantity)
+                    break
+                  else:
+                    orders[order_num]['drins'][new_Drink.lower()] = int(new_Drink_Quantity)
+                    break
+
+              except ValueError:
+                print("Enter a valid drink")
+                continue
+
+          elif (selection == '5'):
+            while True:
+              try:
+                new_Drink = input("Please enter the name of the drink you wish to modify\n")
+                new_Drink_Quantity = input("Please enter the updated quantity of the drink")
+                if (int(new_Drink_Quantity) < 0 or (not (new_Drink.lower() in menu['drinks'])) or not (
+                    new_Drink.lower() in orders[order_num]['drinks'])):
+                  raise ValueError
+                else:
+                  orders[order_num]['drinks'][new_Drink.lower()] = int(new_Drink_Quantity)
+                  break
+              except ValueError:
+                print("Enter a valid drink")
+                continue
+          elif (selection == '6'):
+            break
+          else:
+            raise IndexError
+        except IndexError:
+          print("Enter a valid option")
+          continue
+
+      os.system("echo")
+
     else:
 
       print("Enter a Valid Number\n")
