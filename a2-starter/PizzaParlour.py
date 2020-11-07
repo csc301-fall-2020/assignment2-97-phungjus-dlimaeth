@@ -38,6 +38,23 @@ def update_order():
     json.dump(data, items)
   return "Order updated"
 
+@app.route('/menu')
+def display_menu():
+  menu = Menu()
+  return menu.return_Menu()
+
+@app.route('/menu/<item_name>', methods = ['GET'])
+def item_price(item_name):
+  menu = Menu()
+  for categories in menu.data:
+    if item_name in menu.data[categories]:
+      return menu.data[categories][item_name]
+
+@app.route('/order/<order_id>', methods = ['GET'])
+def get_order(order_id):
+  return order_id
+
+
 def sum():
     return 5 + 5
 
