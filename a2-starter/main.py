@@ -1,14 +1,6 @@
 import os
 import json
 
-#TEST VALUES
-orders = {'01234':
-            {"drinks":{"water": 1},"pizza":[{"pizzaSize":"small","pizzaType":"vegetarian","toppings":["beef","chicken"]}]},
-          '52311':
-            {"drinks": {},"pizza":[{"pizzaSize":"xl","pizzaType":"pepperoni","toppings":[]}]}
-          }
-#TEST VALUES
-
 with open('./menu.json') as items:
   menu = json.load(items)
 
@@ -111,6 +103,8 @@ def cli():
       while True:
 
         try:
+          with open('./order.json') as order:
+            orders = json.load(order)
           order_num = input("Please enter your order number: \n")
           if not (order_num in orders):
             raise IndexError
@@ -121,7 +115,6 @@ def cli():
           continue
 
       # TODO use order.json instead
-      cur_order = orders[order_num]
 
       print("Options for Updating Order:")
       print("1. Add Pizza")
@@ -287,7 +280,11 @@ def cli():
           print("Enter a valid option")
           continue
 
-      os.system("echo")
+      json_obj = json.dumps(orders, indent=4)
+
+      str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/update_order -d '" + json_obj + "'"
+
+      os.system(str_output)
 
     else:
 
