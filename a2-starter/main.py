@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 
 with open('./menu.json') as items:
   menu = json.load(items)
@@ -19,7 +20,7 @@ def cli():
     print("5. Exit")
 
     choice = input("Enter the number of the action you wish to do:\n")
-
+    print(choice)
     if (choice == '1'):
 
       while True:
@@ -91,12 +92,62 @@ def cli():
           print("Invalid drink please try again")
           continue
 
-      json_obj = json.dumps(curOrder, indent=4)
+      json_obj = json.dumps(curOrder)
 
       str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/order -d '" + json_obj + "'"
 
       os.system(str_output)
 
+      with open('./order.json') as order:
+        orders = json.load(order)
+
+      while True:
+        print("How would like to receive your pizza: ")
+        print("1. Pizza Parlour's Delivery Person")
+        print("2. Uber Eats")
+        print("3. Foodora")
+        deliveryType = input("Enter your the number of your choice of delivery:\n")
+        try:
+
+          if (deliveryType != "1" and deliveryType != "2" and deliveryType != "3"):
+            raise ValueError
+          else:
+
+            deliveryDetails = {}
+
+            while True:
+              try:
+                orderNumber = input("Enter your order number\n")
+                if (not (orderNumber in orders)):
+                  raise ValueError
+                else:
+                  address = input("Please enter the address you wish to have the pizza delivered to\n")
+                  break
+              except ValueError:
+                print("Enter a valid order number")
+                continue
+            orderDetails = orders[orderNumber]
+
+            deliveryDetails["orderNumber"] = orderNumber
+            deliveryDetails["orderDetails"] = orderDetails
+            deliveryDetails["address"] = address
+            deliveryDetailsJSON = json.dumps(deliveryDetails)
+
+            if (deliveryType == "1" or deliveryType == "2"):
+              str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/delivery -d '" + \
+                           deliveryDetailsJSON + "'"
+              os.system(str_output)
+            else:
+              jsonDF = pd.read_json(deliveryDetailsJSON)
+              csv = jsonDF.to_csv()
+              str_output = "curl -X POST http://127.0.0.1:5000/delivery -d '" + \
+                           csv + "'"
+              os.system(str_output)
+
+
+        except ValueError:
+          print("Enter a valid delivery number")
+          continue
 
     elif (choice == '2'):
 
@@ -116,7 +167,7 @@ def cli():
 
       # TODO use order.json instead
 
-     
+
 
       while True:
 
@@ -284,11 +335,72 @@ def cli():
           print("Enter a valid option")
           continue
 
-      json_obj = json.dumps(orders, indent=4)
+      json_obj = json.dumps(orders)
 
       str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/update_order -d '" + json_obj + "'"
 
       os.system(str_output)
+
+
+    elif (choice == "3"):
+
+      with open('./order.json') as order:
+        orders = json.load(order)
+
+      while True:
+        try:
+          order_Number_Cancel = input("Please enter the order number that you wish to cancel\n")
+          if (not (order_Number_Cancel in orders)):
+            raise ValueError
+          else:
+            orders.pop(order_Number_Cancel)
+
+            json_obj = json.dumps(orders)
+
+            str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/delete_order -d '" + json_obj + "'"
+
+            os.system(str_output)
+
+        except ValueError:
+          print("Enter a valid order number")
+          continue
+
+    elif (choice == "4"):
+
+      while True:
+        try:
+          print("View Menu Options:")
+          print("1. See Full Menu")
+          print("2. See Item Price")
+
+          menuOption = input("Please select which menu option you would like\n")
+
+          if (menuOption != "1" and menuOption != "2"):
+            raise ValueError
+          else:
+            if (menuOption == "1"):
+              os.system("curl http://127.0.0.1:5000/menu")
+              break
+            else:
+              while True:
+                try:
+                  item_name = input("Enter the name of the item you wish to know the price of\n")
+                  lower_Item_Name = item_name.lower()
+                  if ((not(lower_Item_Name in menu['drinks'])) and (not(lower_Item_Name in menu['pizzaTypes'])) and (not(lower_Item_Name in menu['toppings'])) and (not(lower_Item_Name in menu['size']))):
+                    raise ValueError
+                  else:
+                    os.system("curl http://127.0.0.1:5000/menu")
+                    break
+                except ValueError:
+                  print("Enter Valid Item Name")
+                  continue
+              break
+        except ValueError:
+          print("Enter valid menu option")
+          continue
+    elif (choice == "5"):
+
+      break
 
     else:
 
