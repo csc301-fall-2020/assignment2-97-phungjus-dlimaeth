@@ -18,7 +18,7 @@ def cli():
         print("5. Exit")
 
         choice = input("Enter the number of the action you wish to do:\n")
-        print(choice)
+
         if choice == '1':
 
             while True:
@@ -141,7 +141,6 @@ def cli():
                     print("Enter a valid order number")
                     continue
 
-            # TODO use order.json instead
             cur_order = Order(orders[order_num])
             while True:
 
@@ -300,9 +299,15 @@ def cli():
                     if not (order_Number_Cancel in orders):
                         raise ValueError
 
-                    str_output = "curl http://127.0.0.1:5000/delete_order/<" + order_Number_Cancel + ">"
+                    order_To_Delete = {order_Number_Cancel: orders[order_Number_Cancel]}
+
+                    order_To_DeleteJSON = json.dumps(order_To_Delete)
+
+                    str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/delete_order -d '" + order_To_DeleteJSON + "'"
 
                     os.system(str_output)
+
+                    break
 
                 except ValueError:
                     print("Enter a valid order number")
@@ -335,7 +340,7 @@ def cli():
                                             not (lower_Item_Name in menu['size']))):
                                         raise ValueError
                                     else:
-                                        os.system("curl http://127.0.0.1:5000/menu/<" + lower_Item_Name + ">")
+                                        os.system("curl http://127.0.0.1:5000/menu/" + lower_Item_Name)
                                         break
                                 except ValueError:
                                     print("Enter Valid Item Name")
