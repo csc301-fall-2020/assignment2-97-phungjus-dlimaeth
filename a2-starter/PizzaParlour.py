@@ -6,7 +6,6 @@ orderNumber = 0
 app = Flask("Assignment 2")
 
 
-
 @app.route('/pizza')
 def welcome_pizza():
     return 'Welcome to Pizza Planet!\n'
@@ -27,12 +26,16 @@ def place_order():
 
   return "Your order number is: " + str(currentOrderNumber) + "\n"
 
-@app.route('/delete_order', methods=['POST'])
-def delete_order():
+@app.route('/delete_order/<order_num>', methods=['POST'])
+def delete_order(order_num):
 
-  data = request.get_json()
+  with open('./order.json', 'r+') as items:
+    order = json.load(items)
+
+  order.pop(order_num)
+
   with open('./order.json', 'w') as items:
-    json.dump(data, items)
+    json.dump(order, items)
   return "Order Deleted\n"
 
 @app.route('/update_order', methods=['POST'])
@@ -57,9 +60,6 @@ def item_price(item_name):
 
 @app.route('/delivery', methods=['POST'])
 def handle_Delivery():
-
-  if (request.get_json() == None):
-    return "Foodora Delivery Instructions Received\n"
 
   return "Delivery Instructions Received!\n"
 

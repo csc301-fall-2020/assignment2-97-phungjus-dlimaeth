@@ -4,12 +4,69 @@ from Order import Order
 import json
 
 
+################# Pizza Parlour Tests ######################
+
+
 def test_pizza():
     response = app.test_client().get('/pizza')
 
     assert response.status_code == 200
     assert response.data == 'Welcome to Pizza Planet!\n'
 
+def test_menu():
+
+    menu = Menu()
+
+    response = app.test_client().get('/menu')
+
+    assert response.status_code == 200
+    assert response.data == menu.return_Menu()
+
+def test_menu_item():
+
+    menu = Menu()
+
+    response = app.test_client().get('/pizza/coke')
+
+    assert response.status_code == 200
+    assert response.data == "coke: $1.49\n"
+
+def test_order():
+
+    with open('./order.json', 'r') as items:
+      order = json.load(items)
+
+    response = app.test_client().post('/order', data={"pizza": [{"pizzaType": "pepperoni", "pizzaSize": "xl", "toppings": ["chicken", "beef"]}], "drinks": {"water": 1}})
+
+    assert response.data == "Your order number is 0\n"
+    assert response.status_code == 200
+    assert "0" in order
+    assert order["0"]["pizza"] == "pepperoni"
+    assert order["0"]["pizzaSize"] == "xl"
+    assert order["0"]["toppings"] == ["chicken", "beef"]
+    assert order["0"]["drinks"]["water"] == 1
+
+def test_order_cancel():
+
+    response = app.test_client().get("/delete_order/0")
+
+    assert response.data == "Order Deleted\n"
+    assert response.status_code == 200
+
+    with open('./order.json', 'r') as items:
+      order = json.load(items)
+
+    try:
+      order["0"]
+    except KeyError:
+      assert True == True
+
+def test_delivery():
+
+    response = app.test_client().post("/delivery", data={})
+
+    assert response.data == "Delivery Instructions Received!\n"
+    assert response.status_code == 200
 
 ################# Menu tests ######################
 def test_add_and_remove_pizza():
