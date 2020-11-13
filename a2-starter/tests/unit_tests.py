@@ -13,8 +13,8 @@ def test_pizza():
     assert response.status_code == 200
     assert response.data == 'Welcome to Pizza Planet!\n'
 
-def test_menu():
 
+def test_menu():
     menu = Menu()
 
     response = app.test_client().get('/menu')
@@ -22,8 +22,8 @@ def test_menu():
     assert response.status_code == 200
     assert response.data == menu.return_Menu()
 
-def test_menu_item():
 
+def test_menu_item():
     menu = Menu()
 
     response = app.test_client().get('/menu/coke')
@@ -31,44 +31,76 @@ def test_menu_item():
     assert response.status_code == 200
     assert response.data == "coke: $1.49\n"
 
+
 def test_order():
+    with open('./order.json', 'r+') as items:
+        order = json.load(items)
 
-    with open('./order.json', 'r') as items:
-      order = json.load(items)
+    order_ids_strings = list(order.keys())
+    order_ids_int = []
+
+    for i in order_ids_strings:
+        order_ids_int.append(int(i))
+
+    if len(order_ids_int) == 0:
+        orderNumber = 0
+    else:
+        orderNumber = max(order_ids_int) + 1
+
     default_order = {"pizza": [{"pizzaType": "pepperoni", "pizzaSize": "xl", "toppings": ["chicken", "beef"]}],
-            "drinks": {"water": 1}}
+                     "drinks": {"water": 1}}
 
-    response = app.test_client().post('/order', data=json.dumps(default_order))
+    response = app.test_client().post('/order', data=json.dumps(default_order), content_type="application/json")
 
-    assert response.data == "Your order number is: 0\n"
+    with open('./order.json', 'r+') as items:
+        order_temp = json.load(items)
+    assert response.data == "Your order number is: " + str(orderNumber) + "\n"
     assert response.status_code == 200
-    assert "0" in order
-    assert order["0"]["pizza"][0]["pizzaType"] == "pepperoni"
-    assert order["0"]["pizza"][0]["pizzaSize"] == "xl"
-    assert order["0"]["pizza"][0]["toppings"] == ["chicken", "beef"]
-    assert order["0"]["drinks"]["water"] == 1
+    assert str(orderNumber) in order_temp
+    assert order_temp[str(orderNumber)]["pizza"][0]["pizzaType"] == "pepperoni"
+    assert order_temp[str(orderNumber)]["pizza"][0]["pizzaSize"] == "xl"
+    assert order_temp[str(orderNumber)]["pizza"][0]["toppings"] == ["chicken", "beef"]
+    assert order_temp[str(orderNumber)]["drinks"]["water"] == 1
+
 
 def test_order_cancel():
+    default_order = {"1": {"pizza": [{"pizzaSize": "xl", "pizzaType": "pepperoni", "toppings": ["chicken", "beef"]}],
+                           "drinks": {"water": 1}}}
 
-    response = app.test_client().get("/delete_order/1")
+    response = app.test_client().post("/delete_order", content_type="application/json", data=json.dumps(default_order))
 
     assert response.data == "Order Deleted\n"
     assert response.status_code == 200
 
     with open('./order.json', 'r') as items:
-      order = json.load(items)
+        order = json.load(items)
 
     try:
-      order["1"]
+        order["1"]
     except KeyError:
-      assert True == True
+        assert True == True
+
+
+def test_update():
+    update_order = {
+        "0": {"drinks": {"water": 1}, "pizza": [{"toppings": [], "pizzaType": "pepperoni", "pizzaSize": "small"}]}}
+    response = app.test_client().post("/update_order", content_type="application/json", data=json.dumps(update_order))
+    assert response.data == "Order updated\n"
+    assert response.status_code == 200
+
+    with open('./order.json', 'r') as items:
+        order = json.load(items)
+
+    assert order["0"] == {"drinks": {"water": 1},
+                          "pizza": [{"toppings": [], "pizzaType": "pepperoni", "pizzaSize": "small"}]}
+
 
 def test_delivery():
-
     response = app.test_client().post("/delivery", data={})
 
     assert response.data == "Delivery Instructions Received!\n"
     assert response.status_code == 200
+
 
 ################# Menu tests ######################
 def test_add_and_remove_pizza():
