@@ -18,18 +18,18 @@ def cli():
         if choice == '1':
 
             while True:
-                numPizzas = input("How many pizzas would you like to order?\n")
+                num_pizzas = input("How many pizzas would you like to order?\n")
                 try:
-                    int(numPizzas)
+                    int(num_pizzas)
                     break
                 except ValueError:
                     print("Enter valid number")
                     continue
 
             while True:
-                numDrinks = input("How many drinks would you like to order?\n")
+                num_drinks = input("How many drinks would you like to order?\n")
                 try:
-                    int(numDrinks)
+                    int(num_drinks)
                     break
                 except ValueError:
                     print("Enter a valid number")
@@ -41,10 +41,10 @@ def cli():
 
                 try:
 
-                    if cur_order.countPizza == int(numPizzas):
+                    if cur_order.countPizza == int(num_pizzas):
                         break
-                    pizzaOrder = input("Enter your pizza order in the format: PizzaType Size [ToppingA,ToppingB,..]\n")
-                    cur_order.add_pizza(pizzaOrder)
+                    pizza_order = input("Enter your pizza order in the format: PizzaType Size [ToppingA,ToppingB,..]\n")
+                    cur_order.add_pizza(pizza_order)
 
                 except IndexError:
                     print('Invalid input please try to match the exact format')
@@ -54,7 +54,7 @@ def cli():
 
                 try:
 
-                    if cur_order.countDrinks == int(numDrinks):
+                    if cur_order.countDrinks == int(num_drinks):
                         break
                     drink = input("Enter the drink you wish to order\n")
                     cur_order.add_drink(drink, 1)
@@ -64,7 +64,8 @@ def cli():
 
             json_obj = json.dumps(cur_order.user_order)
 
-            str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/order -d '" + json_obj + "'"
+            str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/order -d '" \
+                         + json_obj + "'"
 
             os.system(str_output)
 
@@ -74,19 +75,19 @@ def cli():
             while True:
                 print("How would like to receive your pizza: \n1. Pizza Parlour's Delivery Person\n"
                       "2. Uber Eats\n3. Foodora")
-                deliveryType = input("Enter your the number of your choice of delivery:\n")
+                delivery_type = input("Enter your the number of your choice of delivery:\n")
                 try:
 
-                    if deliveryType != "1" and deliveryType != "2" and deliveryType != "3":
+                    if delivery_type != "1" and delivery_type != "2" and delivery_type != "3":
                         raise ValueError
                     else:
 
-                        deliveryDetails = {}
+                        delivery_details = {}
 
                         while True:
                             try:
-                                orderNumber = input("Enter your order number\n")
-                                if not (orderNumber in orders):
+                                order_number = input("Enter your order number\n")
+                                if not (order_number in orders):
                                     raise ValueError
                                 else:
                                     address = input(
@@ -95,22 +96,22 @@ def cli():
                             except ValueError:
                                 print("Enter a valid order number")
                                 continue
-                        orderDetails = orders[orderNumber]
+                        order_details = orders[order_number]
 
-                        deliveryDetails["orderNumber"] = orderNumber
-                        deliveryDetails["orderDetails"] = orderDetails
-                        deliveryDetails["address"] = address
-                        deliveryDetailsJSON = json.dumps(deliveryDetails)
+                        delivery_details["orderNumber"] = order_number
+                        delivery_details["orderDetails"] = order_details
+                        delivery_details["address"] = address
+                        delivery_details_json = json.dumps(delivery_details)
 
-                        if deliveryType == "1" or deliveryType == "2":
+                        if delivery_type == "1" or delivery_type == "2":
                             str_output = "curl -X POST -H 'Content-Type: application/json' " \
                                          "http://127.0.0.1:5000/delivery -d '" + \
-                                         deliveryDetailsJSON + "'"
+                                         delivery_details_json + "'"
                             os.system(str_output)
                             break
                         else:
-                            jsonDF = pd.read_json(deliveryDetailsJSON)
-                            csv = jsonDF.to_csv()
+                            json_df = pd.read_json(delivery_details_json)
+                            csv = json_df.to_csv()
                             str_output = "curl -X POST http://127.0.0.1:5000/delivery -d '" + \
                                          csv + "'"
                             os.system(str_output)
@@ -147,10 +148,10 @@ def cli():
 
                         while True:
                             try:
-                                pizzaOrder = input(
+                                pizza_order = input(
                                     "Enter your pizza order in the format: PizzaType Size [ToppingA,ToppingB,..]\n")
 
-                                cur_order.add_pizza(pizzaOrder)
+                                cur_order.add_pizza(pizza_order)
                                 break
                             except IndexError:
                                 print('Invalid input please try to match the exact format')
@@ -161,13 +162,13 @@ def cli():
 
                         while True:
                             try:
-                                pizzaPosition = input(
+                                pizza_position = input(
                                     "Please enter the number that corresponds to the pizza you wish to delete "
                                     "starting from 1, and from left to right\n")
-                                if int(pizzaPosition) > cur_order.countPizza or int(pizzaPosition) <= 0:
+                                if int(pizza_position) > cur_order.countPizza or int(pizza_position) <= 0:
                                     raise ValueError
                                 else:
-                                    cur_order.delete_pizza(int(pizzaPosition) - 1)
+                                    cur_order.delete_pizza(int(pizza_position) - 1)
                                     print("Pizza successfully deleted")
                                     break
                             except ValueError:
@@ -180,13 +181,13 @@ def cli():
                         done = False
                         while not done:
                             try:
-                                pizzaPosition = input(
+                                pizza_position = input(
                                     "Please enter the number that corresponds to the pizza you wish to modify "
                                     "starting from 1, and from left to right\n")
-                                if int(pizzaPosition) > cur_order.countPizza or int(pizzaPosition) <= 0:
+                                if int(pizza_position) > cur_order.countPizza or int(pizza_position) <= 0:
                                     raise ValueError
                                 else:
-                                    index = int(pizzaPosition) - 1
+                                    index = int(pizza_position) - 1
 
                                     while True:
                                         try:
@@ -219,10 +220,10 @@ def cli():
                                             elif options == '3':
                                                 while True:
                                                     try:
-                                                        new_Pizza_Toppings = input(
+                                                        new__pizza__toppings = input(
                                                             "Please enter the new list of toppings in format: ["
                                                             "toppingA,toppingB,...]\n")
-                                                        cur_order.change_toppings(index, new_Pizza_Toppings)
+                                                        cur_order.change_toppings(index, new__pizza__toppings)
                                                         break
                                                     except IndexError:
                                                         print("Enter valid list of Toppings")
@@ -243,11 +244,11 @@ def cli():
 
                         while True:
                             try:
-                                new_Drink = input("Please enter the new drink you wish to add\n")
-                                new_Drink_Quantity = input(
+                                new__drink = input("Please enter the new drink you wish to add\n")
+                                new__drink__quantity = input(
                                     "Please enter the quantity you wish to add of the new Drink\n")
 
-                                cur_order.add_drink(new_Drink, int(new_Drink_Quantity))
+                                cur_order.add_drink(new__drink, int(new__drink__quantity))
                                 break
 
                             except ValueError:
@@ -257,9 +258,9 @@ def cli():
                     elif selection == '5':
                         while True:
                             try:
-                                new_Drink = input("Please enter the name of the drink you wish to modify\n")
-                                new_Drink_Quantity = input("Please enter the updated quantity of the drink\n")
-                                cur_order.change_drink_quantity(new_Drink.lower(), int(new_Drink_Quantity))
+                                new__drink = input("Please enter the name of the drink you wish to modify\n")
+                                new__drink__quantity = input("Please enter the updated quantity of the drink\n")
+                                cur_order.change_drink_quantity(new__drink.lower(), int(new__drink__quantity))
                                 break
                             except ValueError:
                                 print("Enter a valid drink")
@@ -274,7 +275,8 @@ def cli():
 
             json_obj = json.dumps(orders)
 
-            str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/update_order -d '" + json_obj + "'"
+            str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/update_order -d '" \
+                         + json_obj + "'"
 
             os.system(str_output)
 
@@ -285,15 +287,15 @@ def cli():
 
             while True:
                 try:
-                    order_Number_Cancel = input("Please enter the order number that you wish to cancel\n")
-                    if not (order_Number_Cancel in orders):
+                    order__number__cancel = input("Please enter the order number that you wish to cancel\n")
+                    if not (order__number__cancel in orders):
                         raise ValueError
 
-                    order_To_Delete = {order_Number_Cancel: orders[order_Number_Cancel]}
+                    order__to__delete = {order__number__cancel: orders[order__number__cancel]}
 
-                    order_To_DeleteJSON = json.dumps(order_To_Delete)
+                    order__to__delete_json = json.dumps(order__to__delete)
 
-                    str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/delete_order -d '" + order_To_DeleteJSON + "'"
+                    str_output = "curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/delete_order -d '" + order__to__delete_json + "'"
 
                     os.system(str_output)
 
@@ -309,29 +311,27 @@ def cli():
                 try:
                     print("View Menu Options:\n1. See Full Menu\n2. See Item Price")
 
-                    menuOption = input("Please select which menu option you would like\n")
+                    menu_option = input("Please select which menu option you would like\n")
 
-                    if menuOption != "1" and menuOption != "2":
+                    if menu_option != "1" and menu_option != "2":
                         raise ValueError
                     else:
-                        if menuOption == "1":
+                        if menu_option == "1":
                             os.system("curl http://127.0.0.1:5000/menu")
                             break
                         else:
                             while True:
                                 try:
                                     item_name = input("Enter the name of the item you wish to know the price of\n")
-                                    lower_Item_Name = item_name.lower()
-                                    if ((not (lower_Item_Name in menu['drinks'])) and (
-                                            not (lower_Item_Name in menu['pizzaTypes'])) and (
-                                            not (lower_Item_Name in menu['toppings'])) and (
-                                            not (lower_Item_Name in menu['size']))):
+                                    lower__item__name = item_name.lower()
+                                    if ((not (lower__item__name in menu['drinks'])) and (
+                                            not (lower__item__name in menu['pizzaTypes'])) and (
+                                            not (lower__item__name in menu['toppings'])) and (
+                                            not (lower__item__name in menu['size']))):
                                         raise ValueError
 
-
-                                    os.system("curl http://127.0.0.1:5000/menu/" + lower_Item_Name)
+                                    os.system("curl http://127.0.0.1:5000/menu/" + lower__item__name)
                                     break
-
 
                                 except ValueError:
                                     print("Enter Valid Item Name")

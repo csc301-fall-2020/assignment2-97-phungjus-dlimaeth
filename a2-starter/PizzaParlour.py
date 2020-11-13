@@ -2,7 +2,19 @@ from flask import Flask, request, jsonify
 from Menu import Menu
 import json
 
-orderNumber = 0
+with open('./order.json', 'r+') as items:
+  order = json.load(items)
+
+order_ids_strings = list(order.keys())
+order_ids_int = []
+
+for i in order_ids_strings:
+  order_ids_int.append(int(i))
+
+if len(order_ids_int) == 0:
+  orderNumber = 0
+else:
+  orderNumber = max(order_ids_int) + 1
 app = Flask("Assignment 2")
 
 
