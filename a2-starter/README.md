@@ -29,6 +29,10 @@ method place_order() and with the completion of this we finished paired programm
 
 The second feature we paired programmed was updating orders, to start off Ethan was the navigator while Justin was the driver, during this time we finished implementing a draft inside the CLI for updating orders and the Flask module. We then switched roles and finished implmenting the CLI by making a few edits to the code code to fix some bugs from the original draft
 
+Reflection:
+
+Through the process of paired programming there were many positives and negatives to the process itself. Some positives were fewer coding mistakes as the other person could point out any issues they see immediately, it also increased efficiency as we could share knowledge immediately as opposed to wasting time searching for it online. Some negatives were sustainability because you cannot pair program for long periods of time, and it puts a strain on your communication skills because if you cannot communicate your idea effectively your partner won't understand either.
+
 # PROGRAM DESIGN
 
 We decided to use the SOLID design principles. We chose to use the SOLID design principles because using these principles allows for the code to be easily refactored, maintained, and extend.
