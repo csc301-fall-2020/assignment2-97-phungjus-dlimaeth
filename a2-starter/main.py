@@ -113,13 +113,14 @@ def cli():
                                          "http://127.0.0.1:5000/delivery -d '" + \
                                          deliveryDetailsJSON + "'"
                             os.system(str_output)
+                            break
                         else:
                             jsonDF = pd.read_json(deliveryDetailsJSON)
                             csv = jsonDF.to_csv()
                             str_output = "curl -X POST http://127.0.0.1:5000/delivery -d '" + \
                                          csv + "'"
                             os.system(str_output)
-
+                            break
                 except ValueError:
                     print("Enter a valid delivery number")
                     continue
@@ -298,15 +299,10 @@ def cli():
                     order_Number_Cancel = input("Please enter the order number that you wish to cancel\n")
                     if not (order_Number_Cancel in orders):
                         raise ValueError
-                    else:
-                        orders.pop(order_Number_Cancel)
 
-                        json_obj = json.dumps(orders)
+                    str_output = "curl http://127.0.0.1:5000/delete_order/<" + order_Number_Cancel + ">"
 
-                        str_output = "curl -X POST -H 'Content-Type: application/json' " \
-                                     "http://127.0.0.1:5000/delete_order -d '" + json_obj + "' "
-
-                        os.system(str_output)
+                    os.system(str_output)
 
                 except ValueError:
                     print("Enter a valid order number")
@@ -339,7 +335,7 @@ def cli():
                                             not (lower_Item_Name in menu['size']))):
                                         raise ValueError
                                     else:
-                                        os.system("curl http://127.0.0.1:5000/menu")
+                                        os.system("curl http://127.0.0.1:5000/menu/<" + lower_Item_Name + ">")
                                         break
                                 except ValueError:
                                     print("Enter Valid Item Name")
