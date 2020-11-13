@@ -10,12 +10,8 @@ def cli():
 
     while True:
 
-        print("What would you like to do?:")
-        print("1. Place a new order")
-        print("2. Update an existing order")
-        print("3. Cancel an order")
-        print("4. View the menu")
-        print("5. Exit")
+        print("What would you like to do?:\n1. Place a new order\n2. Update an existing order\n"
+              "3. Cancel an order\n4. View the menu\n5. Exit")
 
         choice = input("Enter the number of the action you wish to do:\n")
         print(choice)
@@ -76,10 +72,8 @@ def cli():
                 orders = json.load(order)
 
             while True:
-                print("How would like to receive your pizza: ")
-                print("1. Pizza Parlour's Delivery Person")
-                print("2. Uber Eats")
-                print("3. Foodora")
+                print("How would like to receive your pizza: \n1. Pizza Parlour's Delivery Person\n"
+                      "2. Uber Eats\n3. Foodora")
                 deliveryType = input("Enter your the number of your choice of delivery:\n")
                 try:
 
@@ -146,13 +140,9 @@ def cli():
             while True:
 
                 try:
-                    print("Options for Updating Order:")
-                    print("1. Add Pizza")
-                    print("2. Delete Pizza")
-                    print("3. Update Pizza")
-                    print("4. Add Drink")
-                    print("5. Update Drink")
-                    print("6. Exit")
+                    print("Options for Updating Order:\n1. Add Pizza\n2. Delete Pizza\n3. Update Pizza\n"
+                          "4. Add Drink\n5. Update Drink\n6. Exit")
+
                     selection = input("Select an Option\n")
                     if selection == '1':
 
@@ -312,9 +302,7 @@ def cli():
 
             while True:
                 try:
-                    print("View Menu Options:")
-                    print("1. See Full Menu")
-                    print("2. See Item Price")
+                    print("View Menu Options:\n1. See Full Menu\n2. See Item Price")
 
                     menuOption = input("Please select which menu option you would like\n")
 
@@ -334,9 +322,10 @@ def cli():
                                             not (lower_Item_Name in menu['toppings'])) and (
                                             not (lower_Item_Name in menu['size']))):
                                         raise ValueError
-                                    else:
-                                        os.system("curl http://127.0.0.1:5000/menu/<" + lower_Item_Name + ">")
-                                        break
+
+                                    os.system("curl http://127.0.0.1:5000/menu/<" + lower_Item_Name + ">")
+                                    break
+
                                 except ValueError:
                                     print("Enter Valid Item Name")
                                     continue
