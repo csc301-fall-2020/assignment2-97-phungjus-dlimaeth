@@ -26,14 +26,18 @@ def place_order():
 
   return "Your order number is: " + str(currentOrderNumber) + "\n"
 
-@app.route('/delete_order/<order_num>', methods=['POST'])
-def delete_order(order_num):
+@app.route('/delete_order', methods=['POST'])
+def delete_order():
+
+  data = request.get_json()
+
+  order_number = list(data.keys())[0]
 
   with open('./order.json', 'r+') as items:
     order = json.load(items)
-
-  order.pop(order_num)
-
+  #
+  order.pop(order_number)
+  #
   with open('./order.json', 'w') as items:
     json.dump(order, items)
   return "Order Deleted\n"

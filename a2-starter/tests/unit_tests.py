@@ -26,7 +26,7 @@ def test_menu_item():
 
     menu = Menu()
 
-    response = app.test_client().get('/pizza/coke')
+    response = app.test_client().get('/menu/coke')
 
     assert response.status_code == 200
     assert response.data == "coke: $1.49\n"
@@ -35,20 +35,22 @@ def test_order():
 
     with open('./order.json', 'r') as items:
       order = json.load(items)
+    default_order = {"pizza": [{"pizzaType": "pepperoni", "pizzaSize": "xl", "toppings": ["chicken", "beef"]}],
+            "drinks": {"water": 1}}
 
-    response = app.test_client().post('/order', data={"pizza": [{"pizzaType": "pepperoni", "pizzaSize": "xl", "toppings": ["chicken", "beef"]}], "drinks": {"water": 1}})
+    response = app.test_client().post('/order', data=json.dumps(default_order))
 
-    assert response.data == "Your order number is 0\n"
+    assert response.data == "Your order number is: 0\n"
     assert response.status_code == 200
     assert "0" in order
-    assert order["0"]["pizza"] == "pepperoni"
-    assert order["0"]["pizzaSize"] == "xl"
-    assert order["0"]["toppings"] == ["chicken", "beef"]
+    assert order["0"]["pizza"][0]["pizzaType"] == "pepperoni"
+    assert order["0"]["pizza"][0]["pizzaSize"] == "xl"
+    assert order["0"]["pizza"][0]["toppings"] == ["chicken", "beef"]
     assert order["0"]["drinks"]["water"] == 1
 
 def test_order_cancel():
 
-    response = app.test_client().get("/delete_order/0")
+    response = app.test_client().get("/delete_order/1")
 
     assert response.data == "Order Deleted\n"
     assert response.status_code == 200
@@ -57,7 +59,7 @@ def test_order_cancel():
       order = json.load(items)
 
     try:
-      order["0"]
+      order["1"]
     except KeyError:
       assert True == True
 
