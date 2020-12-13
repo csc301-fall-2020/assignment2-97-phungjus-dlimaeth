@@ -1,0 +1,30 @@
+Pair Programming (13.5/15):
+The report contained some good reflections on what went well and not well in the process.
+It would be also nice to also talk about what can be done better next time in terms of pair programming.
+It would be nice to be more explicit on which commits were done with pair programming. It is a bit hard to figure out from the commit messages.
+
+
+Program design (16/20):
+The report talked about the various design patterns used in the program (e.g SOLID).
+The program design is good in general.
+
+Functionality (24/25):
+Have simple input error checking against wrong inputs.
+CLI is easy to use and most of the functionalities that were tested worked (especially good to have arrow key to help navigate through the CLI instead of typing all the inputs).
+Program crashed when trying to add a pizza to an order; but add a drink works.
+
+
+Tests (14/20):
+7 unit tests failed to run, so can't really test the overall coverage.
+
+
+Code Craftsmanship (8/10):
+There are comments included for most classes explaining its usage.
+The coding style looks clean and consistent.
+The report briefly mentioned the tools being used for development.
+
+md explanation and organization (8/10):
+The readme file included good set of instructions on how to run and test the program.
+
+
+total: 83.5
